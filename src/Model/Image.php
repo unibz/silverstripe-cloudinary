@@ -104,7 +104,7 @@ class Image extends File
             if (array_key_exists($index, $transformations)) {
                 $old = $transformations[$index];
 
-                foreach ($old as $key=>$value) {
+                foreach ($old as $key => $value) {
                     if (array_key_exists($key, $remove)) {
                         unset($old[$key]);
                     }
@@ -128,7 +128,7 @@ class Image extends File
      */
     public function Size($width, $height = false)
     {
-        return $this->Transform([ 'width' => $width, 'height' => $height ]);
+        return $this->Transform(['width' => $width, 'height' => $height]);
     }
 
     /**
@@ -137,7 +137,7 @@ class Image extends File
      */
     public function Crop(string $crop = 'fill')
     {
-        return $this->Transform([ 'crop' => $crop ]);
+        return $this->Transform(['crop' => $crop]);
     }
 
     /**
@@ -149,9 +149,9 @@ class Image extends File
         return $quality ? $this->setQuality($quality) : $this->setQuality();
     }
 
-    public function setQuality(string $quality= 'auto')
+    public function setQuality(string $quality = 'auto')
     {
-        return $this->Transform([ 'quality' => $quality ]);
+        return $this->Transform(['quality' => $quality]);
     }
 
     /**
@@ -160,7 +160,7 @@ class Image extends File
      */
     public function Gravity(string $gravity = 'auto')
     {
-        return $this->Transform([ 'gravity' => $gravity ]);
+        return $this->Transform(['gravity' => $gravity]);
     }
 
     /**
@@ -169,7 +169,7 @@ class Image extends File
      */
     public function FetchFormat(string $fetchFormat = 'auto')
     {
-        return $this->Transform([ 'fetch_format' => $fetchFormat ]);
+        return $this->Transform(['fetch_format' => $fetchFormat]);
     }
 
     /**
@@ -179,7 +179,7 @@ class Image extends File
      */
     public function ResizeByWidth($width, string $crop = 'fit')
     {
-        return $this->Transform([ 'width' => $width, 'crop' => $crop ], 0, ['height']);
+        return $this->Transform(['width' => $width, 'crop' => $crop], 0, ['height']);
     }
 
     /**
@@ -189,7 +189,7 @@ class Image extends File
      */
     public function ResizeByHeight($height, string $crop = 'fit')
     {
-        return $this->Transform([ 'height' => $height, 'crop' => $crop ], 0, ['width']);
+        return $this->Transform(['height' => $height, 'crop' => $crop], 0, ['width']);
     }
 
     /**
@@ -201,7 +201,7 @@ class Image extends File
     public function Radius($radius = 0)
     {
         if ($radius) {
-            return $this->Transform([ 'radius' => $radius ]);
+            return $this->Transform(['radius' => $radius]);
         }
 
         return $this->Transform([], 0, ['radius']);
@@ -249,7 +249,7 @@ class Image extends File
             $value = $effect;
         }
 
-        return $this->Transform([ 'effect' => $value ]);
+        return $this->Transform(['effect' => $value]);
     }
 
     /**
@@ -570,8 +570,19 @@ class Image extends File
         }
 
         $this->OriginalColours = json_encode($remoteData['colors']);
-
         return $remoteData['colors'];
+    }
+
+    public function getColor()
+    {
+        $colors = $this->getColors();
+        return isset($colors[0]) ? $colors[0][0] : "#000000";
+    }
+
+    public function getSecondColor()
+    {
+        $colors = $this->getColors();
+        return isset($colors[1]) ? $colors[1][0] : "#000000";
     }
 
     public function getColorsMap($forceFromCloudinary = false)

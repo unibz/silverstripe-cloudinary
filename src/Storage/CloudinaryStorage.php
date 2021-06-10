@@ -72,7 +72,7 @@ class CloudinaryStorage implements Storage\AssetStore, Storage\AssetStoreRouter
         // with generating a publicID using the actual filename
         $tmpFile = str_replace("//", "/", sys_get_temp_dir() . "/" . $justFileName);
 
-        if(!move_uploaded_file($path, $tmpFile)) {
+        if (!move_uploaded_file($path, $tmpFile)) {
             throw new \Exception('Could not copy uploaded file to ' . $tmpFile);
         }
 
@@ -85,6 +85,43 @@ class CloudinaryStorage implements Storage\AssetStore, Storage\AssetStoreRouter
         }
 
         $response = Uploader::upload($tmpFile, $options);
+
+        return [
+            'Filename' => $response['public_id'],
+            'PublicID' => $response['public_id'],
+            'Format' => isset($response['format']) ? $response['format'] : $extension,
+            'SecureURL' => $response['secure_url'],
+            'ResourceType' => $response['resource_type'],
+            'Type' => $response['type'],
+        ];
+    }
+
+    public function setFromRemotePath($path, $filename = null, $hash = null, $variant = null, $config = array())
+    {
+        $uploadPath = str_replace('\\', '/', $filename);
+        $parts = explode('/', $uploadPath);
+        $justFileName = array_pop($parts);
+
+        $pathParts = pathinfo($justFileName);
+        $extension = $pathParts['extension'];
+
+        // Copy the uploaded files to a tmp location with the correct name, so we can let cloudinary deal
+        // with generating a publicID using the actual filename
+        // $tmpFile = str_replace("//", "/", sys_get_temp_dir() . "/" . $justFileName);
+
+        // if(!move_uploaded_file($path, $tmpFile)) {
+        //     throw new \Exception('Could not copy uploaded file to ' . $tmpFile);
+        // }
+
+        $options = [
+            'folder' => implode('/', $parts),
+            'resource_type' => 'auto',
+        ];
+        if ($preset = static::config()->get('upload_preset')) {
+            $options['upload_preset'] = $preset;
+        }
+
+        $response = Uploader::upload($path, $options);
 
         return [
             'Filename' => $response['public_id'],
