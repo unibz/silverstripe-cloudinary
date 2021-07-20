@@ -65,6 +65,8 @@ class File extends BaseFile implements Flushable
 
     public static function flush()
     {
+        /*
+        Temporally disable flush to run dev/build
         $tableName = static::config()->get('table_name');
 
         $fields = DB::field_list($tableName);
@@ -101,6 +103,7 @@ class File extends BaseFile implements Flushable
                 }
             }
         }
+        */
     }
 
     public function requireTable()
